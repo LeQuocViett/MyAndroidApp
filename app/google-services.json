@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "143794284422",
+    "project_id": "dncs3-b81ca",
+    "storage_bucket": "dncs3-b81ca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143794284422:android:25ebdc0117bfa0685f6e07",
+        "android_client_info": {
+          "package_name": "com.example.dncs3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQKH9V36Fnra4wOhElL7uJU1Yhitg_9jo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

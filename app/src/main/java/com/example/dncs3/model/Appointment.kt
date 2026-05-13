@@ -11,6 +11,7 @@ data class Appointment(
     val status: String = "PENDING",
     @SerializedName("userName") val userName: String = "",
     @SerializedName("serviceName") val serviceName: String = "",
+    @SerializedName("service_image") val serviceImage: String = "",
     @SerializedName("user_phone") val userPhone: String = "",
     val note: String = "",
     val price: Double = 0.0,

@@ -133,7 +133,6 @@ fun BookingScreen(
                 .background(if (currentStep == BookingStep.DATE) Color(0xFFF8F9FA) else Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
-            // HIỂN THỊ THÔNG TIN DỊCH VỤ Ở ĐẦU MÀN HÌNH (SỬA LỖI KHÔNG HIỆN THÔNG TIN)
             ServiceSummaryHeader(service)
 
             when(currentStep) {
@@ -256,7 +255,9 @@ fun BookingScreen(
                                 price = service.price,
                                 note = note,
                                 userName = user.name,
-                                userPhone = user.phone
+                                userPhone = user.phone,
+                                serviceName = service.name,
+                                serviceImage = service.imageUrl
                             )
                             viewModel.bookAppointment(appt) { success ->
                                 if (success) {
@@ -686,6 +687,10 @@ fun AppointmentCardUser(appt: Appointment, services: List<BeautyService>, onClic
     val displayPrice = if (appt.price > 0) appt.price else services.find { it.id == appt.serviceId }?.price ?: 0.0
     val formattedPrice = df.format(displayPrice) + "đ"
     
+    // FALLBACK LOGIC: Tìm ảnh từ danh sách services nếu appt.serviceImage trống
+    val imageUrl = if (appt.serviceImage.isNotEmpty()) appt.serviceImage 
+                   else services.find { it.id == appt.serviceId }?.imageUrl ?: ""
+
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() }, 
         shape = RoundedCornerShape(20.dp), 
@@ -694,8 +699,17 @@ fun AppointmentCardUser(appt: Appointment, services: List<BeautyService>, onClic
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.size(85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFFDE4EC)), contentAlignment = Alignment.Center) { 
-                    Icon(Icons.Default.AutoAwesome, null, tint = Color(0xFFD81B60), modifier = Modifier.size(36.dp)) 
+                if (imageUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier.size(85.dp).clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Box(modifier = Modifier.size(85.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFFDE4EC)), contentAlignment = Alignment.Center) { 
+                        Icon(Icons.Default.AutoAwesome, null, tint = Color(0xFFD81B60), modifier = Modifier.size(36.dp)) 
+                    }
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
@@ -748,6 +762,10 @@ fun AppointmentDetailContentUser(appt: Appointment, services: List<BeautyService
     val df = DecimalFormat("#,###")
     val displayPrice = if (appt.price > 0) appt.price else services.find { it.id == appt.serviceId }?.price ?: 0.0
     val formattedPrice = df.format(displayPrice) + "đ"
+    
+    // FALLBACK LOGIC
+    val imageUrl = if (appt.serviceImage.isNotEmpty()) appt.serviceImage 
+                   else services.find { it.id == appt.serviceId }?.imageUrl ?: ""
 
     Column(
         modifier = Modifier
@@ -765,6 +783,19 @@ fun AppointmentDetailContentUser(appt: Appointment, services: List<BeautyService
         }
         
         Spacer(modifier = Modifier.height(16.dp))
+
+        if (imageUrl.isNotEmpty()) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .padding(bottom = 16.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
         
         Card(
             modifier = Modifier.fillMaxWidth(),

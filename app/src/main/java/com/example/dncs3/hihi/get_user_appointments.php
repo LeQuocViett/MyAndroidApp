@@ -2,7 +2,6 @@
 include 'db_config.php';
 header('Content-Type: application/json');
 
-// Tắt hiển thị lỗi trực tiếp để tránh làm hỏng cấu trúc JSON
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -13,12 +12,13 @@ if ($userId <= 0) {
     exit;
 }
 
-// Sử dụng LEFT JOIN để tránh mất dữ liệu khi service hoặc user bị thay đổi/xóa
+// SQL: Lấy image_url từ bảng services và đặt tên là service_image
 $sql = "SELECT a.*,
         u.name as userName,
         u.phone as userPhoneFromUser,
         s.name as serviceName,
-        s.price as servicePrice
+        s.price as servicePrice,
+        s.image_url as service_image
         FROM appointments a
         LEFT JOIN users u ON a.user_id = u.id
         LEFT JOIN services s ON a.service_id = s.id
@@ -35,24 +35,10 @@ while($row = $result->fetch_assoc()) {
     $row['id'] = (int)$row['id'];
     $row['user_id'] = (int)$row['user_id'];
     $row['service_id'] = (int)$row['service_id'];
-
-    // Xử lý giá: Ưu tiên giá lúc đặt (nếu có lưu trong bảng appointments), nếu không lấy giá từ bảng services
-    if (isset($row['price']) && $row['price'] > 0) {
-        $row['price'] = (double)$row['price'];
-    } else {
-        $row['price'] = (double)($row['servicePrice'] ?? 0);
-    }
-
-    // Xử lý tên hiển thị
-    $row['userName'] = $row['userName'] ?? $row['user_name_manual'] ?? "Người dùng";
-
-    // Xử lý số điện thoại: Ưu tiên sđt trong lịch hẹn
-    $row['user_phone'] = !empty($row['user_phone']) ? $row['user_phone'] : ($row['userPhoneFromUser'] ?? "");
-
+    $row['price'] = (isset($row['price']) && $row['price'] > 0) ? (double)$row['price'] : (double)($row['servicePrice'] ?? 0);
+    $row['userName'] = $row['userName'] ?? "Người dùng";
     $row['serviceName'] = $row['serviceName'] ?? "Dịch vụ không xác định";
-    $row['note'] = $row['note'] ?? "";
-    $row['cancel_reason'] = $row['cancel_reason'] ?? "";
-
+    $row['service_image'] = $row['service_image'] ?? ""; // Đảm bảo trả về service_image
     $appointments[] = $row;
 }
 

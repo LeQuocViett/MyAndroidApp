@@ -1,0 +1,232 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th5 13, 2026 lúc 05:42 PM
+-- Phiên bản máy phục vụ: 10.4.32-MariaDB
+-- Phiên bản PHP: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Cơ sở dữ liệu: `beauty_db`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `appointments`
+--
+
+CREATE TABLE `appointments` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
+  `appointment_date` date DEFAULT NULL,
+  `appointment_time` time DEFAULT NULL,
+  `status` enum('PENDING','CONFIRMED','COMPLETED','CANCELLED') DEFAULT 'PENDING',
+  `user_phone` varchar(15) DEFAULT '',
+  `note` text DEFAULT '',
+  `price` decimal(10,2) DEFAULT 0.00,
+  `user_name_manual` varchar(255) DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `appointments`
+--
+
+INSERT INTO `appointments` (`id`, `user_id`, `service_id`, `appointment_date`, `appointment_time`, `status`, `user_phone`, `note`, `price`, `user_name_manual`) VALUES
+(1, 2, 1, '2023-10-25', '09:00:00', 'CONFIRMED', '', '', 0.00, ''),
+(2, 2, 3, '2023-10-26', '14:30:00', 'COMPLETED', '', '', 0.00, ''),
+(3, 4, 1, '0000-00-00', '00:00:12', 'CANCELLED', '', '', 0.00, ''),
+(4, 4, 1, '0000-00-00', '00:00:00', 'CANCELLED', '', '', 0.00, ''),
+(5, 4, 1, '0000-00-00', '00:00:12', 'CANCELLED', '', '', 0.00, ''),
+(6, 2, 1, '2026-05-08', '08:00:00', 'COMPLETED', '0987654321', 'Khách quen', 0.00, 'Nguyễn Văn A'),
+(7, 4, 2, '2026-05-08', '10:30:00', 'COMPLETED', '0762561509', '', 0.00, 'Trần Tú'),
+(8, 2, 3, '2026-05-08', '14:00:00', 'CANCELLED', '0987654321', 'Đến sớm 5p', 0.00, 'Nguyễn Văn A'),
+(9, 4, 5, '2026-05-08', '16:45:00', 'CANCELLED', '0762561509', 'Tư vấn thêm da mặt', 0.00, 'Trần Tú'),
+(10, 2, 4, '2026-05-01', '09:15:00', 'COMPLETED', '0987654321', '', 0.00, 'Nguyễn Văn A'),
+(11, 4, 1, '2026-05-05', '13:00:00', 'COMPLETED', '0762561509', 'Cắt ngắn', 0.00, 'Trần Tú'),
+(12, 2, 2, '2026-05-15', '11:00:00', 'COMPLETED', '0987654321', '', 0.00, 'Nguyễn Văn A'),
+(13, 4, 3, '2026-05-20', '15:30:00', 'CANCELLED', '0762561509', 'Bận việc đột xuất', 0.00, 'Trần Tú'),
+(14, 2, 5, '2026-01-10', '08:00:00', 'COMPLETED', '0987654321', 'Mở hàng năm mới', 0.00, 'Nguyễn Văn A'),
+(15, 4, 4, '2026-02-14', '19:00:00', 'COMPLETED', '0762561509', 'Valentine', 0.00, 'Trần Tú'),
+(16, 2, 1, '2026-03-20', '10:00:00', 'COMPLETED', '0987654321', '', 0.00, 'Nguyễn Văn A'),
+(17, 4, 2, '2026-04-30', '14:00:00', 'COMPLETED', '0762561509', 'Lễ 30/4', 0.00, 'Trần Tú'),
+(18, 2, 3, '2025-12-31', '22:00:00', 'COMPLETED', '0987654321', 'Tiệc cuối năm', 0.00, 'Nguyễn Văn A'),
+(19, 4, 5, '2026-05-09', '09:00:00', 'CANCELLED', '', '', 0.00, ''),
+(20, 4, 5, '2026-05-09', '11:30:00', 'CANCELLED', '', '', 0.00, ''),
+(21, 4, 5, '2026-05-10', '09:00:00', 'CANCELLED', '', '', 0.00, ''),
+(22, 4, 5, '2026-05-10', '10:00:00', 'CANCELLED', '', '', 0.00, ''),
+(23, 4, 4, '2026-05-12', '10:00:00', 'CANCELLED', '', '', 0.00, ''),
+(24, 4, 4, '2026-05-12', '12:00:00', 'CANCELLED', '0762561509', 'em \n[Lý do hủy]: book_appointment.php', 0.00, 'tran tu'),
+(25, 4, 3, '2026-05-16', '10:00:00', 'PENDING', '0762561509', 'em iu', 0.00, 'tran tu'),
+(26, 4, 4, '2026-05-13', '10:00:00', 'CANCELLED', '0762561509', 'mong lon\n\n[Lý do hủy]: do nung cac', 0.00, 'tran tu'),
+(27, 6, 2, '2026-05-14', '10:00:00', 'PENDING', '0896432159', 'gi dau', 0.00, 'le bin'),
+(28, 7, 2, '2026-05-14', '10:00:00', 'PENDING', '0896421255', 'ok bun em\n', 0.00, 'bin banh'),
+(29, 7, 2, '2026-05-15', '10:00:00', 'CANCELLED', '0896421255', 'hong ngu\n\n[Lý do hủy]: mi ngu qua', 0.00, 'bin banh');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `categories`
+--
+
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `icon_url` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `categories`
+--
+
+INSERT INTO `categories` (`id`, `name`, `icon_url`) VALUES
+(1, 'Mail', NULL),
+(3, 'Nail', NULL),
+(4, 'Chăm sóc da', NULL),
+(5, 'Spa', NULL),
+(6, 'Tóc', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `services`
+--
+
+CREATE TABLE `services` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `price` double DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `category_id` int(11) DEFAULT 0,
+  `duration` int(11) DEFAULT 30,
+  `status` varchar(50) DEFAULT 'Hoạt động'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `services`
+--
+
+INSERT INTO `services` (`id`, `name`, `price`, `description`, `image_url`, `category_id`, `duration`, `status`) VALUES
+(1, 'Cắt tóc nam phong cách', 100000, 'Combo cắt tóc, gội đầu và tạo kiểu chuyên nghiệp.', 'https://res.cloudinary.com/drugbbcvw/image/upload/f_auto,q_auto/photo_2026-05-10_21-48-20_uenlkk', 0, 30, 'Hoạt động'),
+(2, 'Gội đầu dưỡng sinh', 150000, 'Massage thư giãn da đầu bằng thảo dược tự nhiên.', 'https://res.cloudinary.com/drugbbcvw/image/upload/v1778503096/photo_2026-05-09_21-44-25_d48piz.jpg', 0, 30, 'Hoạt động'),
+(3, 'Chăm sóc da mặt cơ bản', 300000, 'Tẩy tế bào chết, xông hơi và đắp mặt nạ collagen.', '', 0, 30, 'Hoạt động'),
+(4, 'Làm móng (Manicure)', 200000, 'Cắt tỉa và sơn gel màu sắc đa dạng.', '', 0, 30, 'Hoạt động'),
+(5, 'Massage toàn thân', 500000, 'Liệu pháp massage tinh dầu giảm căng thẳng mệt mỏi.', '', 0, 30, 'Hoạt động'),
+(7, 'bin\n', 1000, 'hhh\n', '', 1, 30, 'Hoạt động');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `phone` varchar(15) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` enum('USER','ADMIN') DEFAULT 'USER',
+  `status` varchar(20) DEFAULT 'ACTIVE',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `role`, `status`, `created_at`) VALUES
+(1, 'Quản Trị Viên', 'admin@gmail.com', '0123456789', '123456', 'ADMIN', 'ACTIVE', '2026-05-07 15:46:43'),
+(2, 'Nguyễn Văn A', 'user@gmail.com', '0987654321', '123456', 'USER', 'ACTIVE', '2026-05-07 15:46:43'),
+(3, 'Le Quoc Viet', 'vietle.91106@gmail.com', '08964322159', '$2y$10$URlPLj7RgO9q3SKTiNWTbO41fGvnPBqEn75ICB6ujJVUb9IQ4S.jm', 'ADMIN', 'ACTIVE', '2026-05-07 15:46:43'),
+(4, 'tran tu', 'tule.91106@gmail.com', '0762561509', '$2y$10$gtGZdZ5q368YVZdG.sjOB.MUGtUDmSbvyvW.3tBUpws27FXCLqrCq', 'USER', 'ACTIVE', '2026-05-07 15:46:43'),
+(6, 'le bin', 'vietle.09112006@gmail.com', '0896432159', '$2y$10$SozjrkKxHGod3KPDJ4ypnOS1m2of.baSrPPscdwvddxDMPR9OJC7S', 'ADMIN', 'ACTIVE', '2026-05-12 02:00:15'),
+(7, 'bin banh', 'binle.91106@gmail.com', '0896421255', '$2y$10$LuLzf.qVgfEyg3jVtAmll.S6Lgn8P0LyNHQmnAl0nD0R1uoc.EMJ.', 'USER', 'ACTIVE', '2026-05-12 14:26:09');
+
+--
+-- Chỉ mục cho các bảng đã đổ
+--
+
+--
+-- Chỉ mục cho bảng `appointments`
+--
+ALTER TABLE `appointments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `service_id` (`service_id`);
+
+--
+-- Chỉ mục cho bảng `categories`
+--
+ALTER TABLE `categories`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `services`
+--
+ALTER TABLE `services`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT cho các bảng đã đổ
+--
+
+--
+-- AUTO_INCREMENT cho bảng `appointments`
+--
+ALTER TABLE `appointments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+
+--
+-- AUTO_INCREMENT cho bảng `categories`
+--
+ALTER TABLE `categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT cho bảng `services`
+--
+ALTER TABLE `services`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT cho bảng `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- Các ràng buộc cho các bảng đã đổ
+--
+
+--
+-- Các ràng buộc cho bảng `appointments`
+--
+ALTER TABLE `appointments`
+  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

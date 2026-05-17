@@ -68,6 +68,12 @@ interface ApiService {
     @POST("add_category.php")
     suspend fun addCategory(@Body category: Category): BaseResponse
 
+    @POST("update_category.php")
+    suspend fun updateCategory(@Body category: Category): BaseResponse
+
+    @POST("delete_category.php")
+    suspend fun deleteCategory(@Body body: Map<String, Int>): BaseResponse
+
     @POST("change_password.php")
     suspend fun changePassword(@Body body: Map<String, String>): BaseResponse
 

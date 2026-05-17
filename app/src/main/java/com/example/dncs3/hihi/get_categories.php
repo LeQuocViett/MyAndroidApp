@@ -1,7 +1,15 @@
 <?php
 include 'db_config.php';
-$result = $conn->query("SELECT * FROM categories");
+header('Content-Type: application/json');
+
+$result = $conn->query("SELECT * FROM categories ORDER BY name ASC");
 $data = [];
-while($row = $result->fetch_assoc()) { $data[] = $row; }
+
+if ($result) {
+    while($row = $result->fetch_assoc()) {
+        $row['id'] = (int)$row['id'];
+        $data[] = $row;
+    }
+}
 echo json_encode($data);
 ?>

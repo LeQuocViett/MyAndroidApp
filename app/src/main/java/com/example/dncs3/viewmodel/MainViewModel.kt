@@ -82,14 +82,42 @@ class MainViewModel(private val repository: BeautyRepository) : ViewModel() {
         }
     }
 
-    fun addCategory(name: String, onResult: (Boolean) -> Unit) {
+    fun addCategory(name: String, onResult: (Boolean, String) -> Unit) {
         viewModelScope.launch {
             try {
                 val response = repository.addCategory(Category(name = name))
                 if (response.success) fetchCategories()
-                onResult(response.success)
+                onResult(response.success, response.message)
             } catch (e: Exception) {
-                onResult(false)
+                onResult(false, "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun updateCategory(category: Category, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = repository.updateCategory(category)
+                if (response.success) fetchCategories()
+                onResult(response.success, response.message)
+            } catch (e: Exception) {
+                onResult(false, "Lỗi kết nối: ${e.message}")
+            }
+        }
+    }
+
+    fun deleteCategory(id: Int, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val response = repository.deleteCategory(id)
+                if (response.success) {
+                    fetchCategories()
+                    onResult(true, "Xóa danh mục thành công")
+                } else {
+                    onResult(false, response.message)
+                }
+            } catch (e: Exception) {
+                onResult(false, "Lỗi kết nối: ${e.message}")
             }
         }
     }
@@ -118,12 +146,19 @@ class MainViewModel(private val repository: BeautyRepository) : ViewModel() {
         }
     }
 
-    fun deleteService(id: Int) {
+    fun deleteService(id: Int, onResult: (Boolean, String) -> Unit = { _, _ -> }) {
         viewModelScope.launch {
             try {
                 val response = repository.deleteService(id)
-                if (response.success) fetchServices()
-            } catch (e: Exception) {}
+                if (response.success) {
+                    fetchServices()
+                    onResult(true, "Xóa dịch vụ thành công")
+                } else {
+                    onResult(false, response.message)
+                }
+            } catch (e: Exception) {
+                onResult(false, "Không thể xóa dịch vụ này (có thể đã có lịch hẹn sử dụng dịch vụ này)")
+            }
         }
     }
 

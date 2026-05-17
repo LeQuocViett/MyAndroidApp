@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    // 10.0.2.2 là địa chỉ IP đặc biệt để máy ảo kết nối tới localhost của máy tính
+    // Thêm /hihi/ vào sau địa chỉ gốc để trỏ đúng vào thư mục chứa các file PHP
     private const val BASE_URL = "http://10.0.2.2/beauty_api/"
 
     private val logging = HttpLoggingInterceptor().apply {

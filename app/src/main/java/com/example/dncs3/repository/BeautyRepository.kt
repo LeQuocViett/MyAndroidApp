@@ -41,6 +41,8 @@ class BeautyRepository(private val apiService: ApiService) {
 
     suspend fun getCategories() = apiService.getCategories()
     suspend fun addCategory(category: Category) = apiService.addCategory(category)
+    suspend fun updateCategory(category: Category) = apiService.updateCategory(category)
+    suspend fun deleteCategory(id: Int) = apiService.deleteCategory(mapOf("id" to id))
 
     suspend fun changePassword(userId: Int, oldPass: String, newPass: String) = 
         apiService.changePassword(mapOf(

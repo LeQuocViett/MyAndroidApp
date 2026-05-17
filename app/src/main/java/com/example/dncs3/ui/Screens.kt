@@ -20,6 +20,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
@@ -797,12 +798,15 @@ fun UserServicesScreen(viewModel: MainViewModel, onServiceClick: (BeautyService)
 
 @Composable
 fun ServiceCardModern(service: BeautyService, onClick: (BeautyService) -> Unit) {
+    val isInactive = service.status != "Hoạt động"
+    
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 8.dp)
             .shadow(4.dp, RoundedCornerShape(20.dp))
-            .clickable { onClick(service) },
+            .clickable { onClick(service) }
+            .alpha(if (isInactive) 0.6f else 1f),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
@@ -810,16 +814,27 @@ fun ServiceCardModern(service: BeautyService, onClick: (BeautyService) -> Unit) 
             modifier = Modifier.padding(12.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (service.imageUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = service.imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier.size(90.dp).clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(modifier = Modifier.size(90.dp).clip(RoundedCornerShape(16.dp)).background(Color(0xFFFDE4EC)), contentAlignment = Alignment.Center) {
-                    Icon(imageVector = Icons.Default.Image, contentDescription = null, tint = Color(0xFFFF4081), modifier = Modifier.size(32.dp))
+            Box(modifier = Modifier.size(90.dp)) {
+                if (service.imageUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = service.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Box(modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)).background(Color(0xFFFDE4EC)), contentAlignment = Alignment.Center) {
+                        Icon(imageVector = Icons.Default.Image, contentDescription = null, tint = Color(0xFFFF4081), modifier = Modifier.size(32.dp))
+                    }
+                }
+                
+                if (isInactive) {
+                    Box(
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)).background(Color.Black.copy(alpha = 0.4f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("TẠM NGƯNG", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 10.sp)
+                    }
                 }
             }
 
@@ -830,10 +845,13 @@ fun ServiceCardModern(service: BeautyService, onClick: (BeautyService) -> Unit) 
                 Text(text = service.description, color = Color.Gray, fontSize = 14.sp, maxLines = 2, modifier = Modifier.padding(vertical = 4.dp))
                 Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                     val df = DecimalFormat("#,###")
-                    Text(text = "${df.format(service.price)} VNĐ", color = Color(0xFFFF4081), fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Surface(modifier = Modifier.size(36.dp), shape = CircleShape, color = Color(0xFFFF4081), shadowElevation = 2.dp) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(20.dp))
+                    Text(text = "${df.format(service.price)} VNĐ", color = if (isInactive) Color.Gray else Color(0xFFFF4081), fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    
+                    if (!isInactive) {
+                        Surface(modifier = Modifier.size(36.dp), shape = CircleShape, color = Color(0xFFFF4081), shadowElevation = 2.dp) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(20.dp))
+                            }
                         }
                     }
                 }
@@ -845,6 +863,8 @@ fun ServiceCardModern(service: BeautyService, onClick: (BeautyService) -> Unit) 
 @Composable
 fun ServiceDetailDialog(service: BeautyService, onDismiss: () -> Unit, onBookClick: () -> Unit) {
     val df = DecimalFormat("#,###")
+    val isInactive = service.status != "Hoạt động"
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = null,
@@ -864,7 +884,7 @@ fun ServiceDetailDialog(service: BeautyService, onDismiss: () -> Unit, onBookCli
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(text = service.name, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-                Text(text = "${df.format(service.price)} VNĐ", fontSize = 18.sp, color = Color(0xFFFF4081), fontWeight = FontWeight.Bold)
+                Text(text = "${df.format(service.price)} VNĐ", fontSize = 18.sp, color = if (isInactive) Color.Gray else Color(0xFFFF4081), fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Default.AccessTime, null, modifier = Modifier.size(16.dp), tint = Color.Gray)
@@ -874,6 +894,24 @@ fun ServiceDetailDialog(service: BeautyService, onDismiss: () -> Unit, onBookCli
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(text = "Mô tả dịch vụ:", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Text(text = service.description, color = Color.DarkGray, fontSize = 14.sp, lineHeight = 20.sp)
+                
+                if (isInactive) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Surface(
+                        color = Color.Red.copy(alpha = 0.1f),
+                        shape = RoundedCornerShape(8.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Dịch vụ hiện đang tạm ngưng kinh doanh.",
+                            color = Color.Red,
+                            fontSize = 13.sp,
+                            modifier = Modifier.padding(12.dp),
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
             }
         },
         confirmButton = {
@@ -881,9 +919,10 @@ fun ServiceDetailDialog(service: BeautyService, onDismiss: () -> Unit, onBookCli
                 onClick = onBookClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF4081)),
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                enabled = !isInactive
             ) {
-                Text("Đặt lịch ngay", fontWeight = FontWeight.Bold)
+                Text(if (isInactive) "Không thể đặt lịch" else "Đặt lịch ngay", fontWeight = FontWeight.Bold)
             }
         },
         dismissButton = {

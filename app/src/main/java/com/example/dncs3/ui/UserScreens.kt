@@ -135,6 +135,26 @@ fun BookingScreen(
         ) {
             ServiceSummaryHeader(service)
 
+            if (service.status != "Hoạt động") {
+                Surface(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    color = Color.Red.copy(alpha = 0.1f),
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, Color.Red.copy(alpha = 0.5f))
+                ) {
+                    Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Default.Error, null, tint = Color.Red)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            "Dịch vụ này hiện đang tạm ngưng hoạt động. Bạn không thể đặt lịch vào lúc này.",
+                            color = Color.Red,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            }
+
             when(currentStep) {
                 BookingStep.DATE -> {
                     Card(
@@ -209,12 +229,12 @@ fun BookingScreen(
                                 Text(
                                     text = "Chọn",
                                     modifier = Modifier
-                                        .clickable { 
+                                        .clickable(enabled = service.status == "Hoạt động") { 
                                             currentStep = BookingStep.TIME 
                                             selectedTime = null
                                         }
                                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                                    color = Color(0xFF2ECC71),
+                                    color = if (service.status == "Hoạt động") Color(0xFF2ECC71) else Color.LightGray,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 16.sp
                                 )
@@ -242,6 +262,10 @@ fun BookingScreen(
                         onDateClick = { currentStep = BookingStep.DATE },
                         onTimeClick = { currentStep = BookingStep.TIME },
                         onConfirm = {
+                            if (service.status != "Hoạt động") {
+                                Toast.makeText(context, "Dịch vụ hiện đang tạm ngưng!", Toast.LENGTH_SHORT).show()
+                                return@ConfirmBookingContent
+                            }
                             val user = viewModel.currentUser
                             if (user == null) {
                                 Toast.makeText(context, "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show()
@@ -350,7 +374,7 @@ fun ConfirmBookingContent(
         OutlinedTextField(
             value = date,
             onValueChange = {},
-            modifier = Modifier.fillMaxWidth().clickable { onDateClick() },
+            modifier = Modifier.fillMaxWidth().clickable(enabled = service.status == "Hoạt động") { onDateClick() },
             readOnly = true, enabled = false,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(disabledTextColor = Color.Black, disabledBorderColor = Color.LightGray, disabledLeadingIconColor = Color.Gray, disabledTrailingIconColor = Color.Gray),
@@ -362,7 +386,7 @@ fun ConfirmBookingContent(
         OutlinedTextField(
             value = time,
             onValueChange = {},
-            modifier = Modifier.fillMaxWidth().clickable { onTimeClick() },
+            modifier = Modifier.fillMaxWidth().clickable(enabled = service.status == "Hoạt động") { onTimeClick() },
             readOnly = true, enabled = false,
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(disabledTextColor = Color.Black, disabledBorderColor = Color.LightGray, disabledLeadingIconColor = Color.Gray, disabledTrailingIconColor = Color.Gray),
@@ -376,7 +400,8 @@ fun ConfirmBookingContent(
             onValueChange = onNoteChange,
             modifier = Modifier.fillMaxWidth().height(120.dp),
             placeholder = { Text("Ghi chú cho cửa hàng (Ví dụ: yêu cầu nhân viên,...)") },
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            enabled = service.status == "Hoạt động"
         )
         Spacer(modifier = Modifier.height(24.dp))
         Row(
@@ -391,8 +416,9 @@ fun ConfirmBookingContent(
         Button(
             onClick = onConfirm,
             modifier = Modifier.fillMaxWidth().height(56.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD81B60)),
-            shape = RoundedCornerShape(12.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = if (service.status == "Hoạt động") Color(0xFFD81B60) else Color.Gray),
+            shape = RoundedCornerShape(12.dp),
+            enabled = service.status == "Hoạt động"
         ) {
             Text(text = if (isEdit) "Cập nhật ngay" else "Đặt lịch ngay", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         }

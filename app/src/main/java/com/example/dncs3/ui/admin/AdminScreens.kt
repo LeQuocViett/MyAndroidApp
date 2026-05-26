@@ -1,4 +1,4 @@
-package com.example.dncs3.ui
+package com.example.dncs3.ui.admin
 
 /*
  * File này đã được chia nhỏ thành các file chuyên biệt để dễ quản lý và bảo trì:

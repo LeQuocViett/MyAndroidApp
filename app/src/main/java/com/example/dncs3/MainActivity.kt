@@ -22,7 +22,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.dncs3.network.RetrofitClient
 import com.example.dncs3.repository.BeautyRepository
-import com.example.dncs3.ui.*
+import com.example.dncs3.ui.admin.*
+import com.example.dncs3.ui.auth.*
+import com.example.dncs3.ui.user.*
 import com.example.dncs3.ui.theme.DNCS3Theme
 import com.example.dncs3.viewmodel.MainViewModel
 import com.example.dncs3.viewmodel.ViewModelFactory
@@ -198,7 +200,7 @@ fun MainApp(viewModel: MainViewModel) {
             
             composable("my_appointments") { MyAppointmentsScreen(viewModel) }
             composable("admin_categories") { AdminCategoriesScreen(viewModel) }
-            composable("admin_services") { 
+            composable("admin_services") {
                 AdminServicesScreen(viewModel, onNavigateToCategories = {
                     navController.navigate("admin_categories")
                 }) 

@@ -1,4 +1,4 @@
-package com.example.dncs3.ui
+package com.example.dncs3.ui.admin
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape

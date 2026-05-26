@@ -1,4 +1,4 @@
-package com.example.dncs3.ui
+package com.example.dncs3.ui.admin
 
 import android.widget.Toast
 import androidx.compose.foundation.background

@@ -2,6 +2,7 @@
 include 'db_config.php';
 header('Content-Type: application/json');
 
+// Tắt hiển thị lỗi trực tiếp để tránh làm hỏng cấu trúc JSON
 error_reporting(0);
 ini_set('display_errors', 0);
 
@@ -12,7 +13,7 @@ if ($userId <= 0) {
     exit;
 }
 
-// SQL: Lấy image_url từ bảng services và đặt tên là service_image
+// Thêm s.image_url as service_image để hiển thị ảnh trên App
 $sql = "SELECT a.*,
         u.name as userName,
         u.phone as userPhoneFromUser,
@@ -35,10 +36,25 @@ while($row = $result->fetch_assoc()) {
     $row['id'] = (int)$row['id'];
     $row['user_id'] = (int)$row['user_id'];
     $row['service_id'] = (int)$row['service_id'];
-    $row['price'] = (isset($row['price']) && $row['price'] > 0) ? (double)$row['price'] : (double)($row['servicePrice'] ?? 0);
-    $row['userName'] = $row['userName'] ?? "Người dùng";
+
+    // Xử lý giá: Ưu tiên giá lúc đặt (nếu có lưu trong bảng appointments), nếu không lấy giá từ bảng services
+    if (isset($row['price']) && $row['price'] > 0) {
+        $row['price'] = (double)$row['price'];
+    } else {
+        $row['price'] = (double)($row['servicePrice'] ?? 0);
+    }
+
+    // Xử lý tên hiển thị
+    $row['userName'] = $row['userName'] ?? $row['user_name_manual'] ?? "Người dùng";
+
+    // Xử lý số điện thoại: Ưu tiên sđt trong lịch hẹn
+    $row['user_phone'] = !empty($row['user_phone']) ? $row['user_phone'] : ($row['userPhoneFromUser'] ?? "");
+
     $row['serviceName'] = $row['serviceName'] ?? "Dịch vụ không xác định";
-    $row['service_image'] = $row['service_image'] ?? ""; // Đảm bảo trả về service_image
+    $row['service_image'] = $row['service_image'] ?? "";
+    $row['note'] = $row['note'] ?? "";
+    $row['cancel_reason'] = $row['cancel_reason'] ?? "";
+
     $appointments[] = $row;
 }
 
